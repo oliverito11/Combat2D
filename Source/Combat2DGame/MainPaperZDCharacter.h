@@ -8,6 +8,8 @@
 #include "Components/BoxComponent.h"
 #include "MainPaperZDCharacter.generated.h"
 
+class UUsernameUserWidget;
+class UWidgetComponent;
 class USpringArmComponent;
 /**
  * 
@@ -26,17 +28,43 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UBoxComponent* AttackTrigger;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
 	bool bIsInCombo {false};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
+	float KnockBack {0};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
+	UWidgetComponent *UsernameWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	UUsernameUserWidget *UsernameUserWidget;
 	
 public:
 	AMainPaperZDCharacter();
-	virtual void BeginPlay() override;
-	void OnHitBox(UPrimitiveComponent* ComponentOverlapped, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
-	              int OtherBodyIndex, bool bSweep, const FHitResult& HitResult);
 
-	UFUNCTION(BlueprintNativeEvent)
+protected:
+	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, AActor *DamageCauser) override;
+public:
+	UFUNCTION(BlueprintImplementableEvent)
 	void JumpPlayer();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StopPlayerJumping();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void Attack();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+    void StopAttack();
+
+	UFUNCTION(Server, Reliable)
+	void RotateCharacter(bool bIsLeft);
+	
 	bool GetIsInCombo() const { return bIsInCombo; }
+
+	UFUNCTION(BlueprintCallable)
+	void ResetKnockBack();
 };

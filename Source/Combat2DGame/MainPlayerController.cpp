@@ -7,10 +7,19 @@
 #include "EnhancedInputSubsystems.h"
 #include "MainPaperZDCharacter.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Net/UnrealNetwork.h"
+
 
 AMainPlayerController::AMainPlayerController()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;	
+}
+
+void AMainPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(AMainPlayerController, PlayerPaperCharacter);
 }
 
 void AMainPlayerController::BeginPlay()
@@ -35,19 +44,16 @@ void AMainPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started,this, &AMainPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopJumping);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMainPlayerController::Attack);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopAttack);
+		EnhancedInputComponent->BindAction(ShowMenuAction, ETriggerEvent::Started, this, &AMainPlayerController::ShowMenu);
 	}
-}
-
-void AMainPlayerController::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
 }
 
 void AMainPlayerController::Move(const FInputActionValue& Value)
 {
-	if(!PlayerPaperCharacter || !PlayerPaperCharacter->GetMovementComponent() || PlayerPaperCharacter->GetIsInCombo()) return;
+	if(!PlayerPaperCharacter || !PlayerPaperCharacter->GetMovementComponent() || PlayerPaperCharacter->GetIsInCombo() || bShowMouseCursor) return;
 	PlayerPaperCharacter->GetMovementComponent()->AddInputVector(Value.Get<FVector>());
-	ChangeSpriteDirection(Value.Get<FVector>().X < 0);
+	PlayerPaperCharacter->RotateCharacter(Value.Get<FVector>().X < 0);
 }
 
 void AMainPlayerController::Jump(const FInputActionValue& Value)
@@ -59,5 +65,17 @@ void AMainPlayerController::Jump(const FInputActionValue& Value)
 void AMainPlayerController::StopJumping(const FInputActionValue& Value)
 {
 	if(!PlayerPaperCharacter || !PlayerPaperCharacter->GetMovementComponent()) return;
-	PlayerPaperCharacter->StopJumping();
+	PlayerPaperCharacter->StopPlayerJumping();
+}
+
+void AMainPlayerController::Attack(const FInputActionValue& Value)
+{
+	if(!PlayerPaperCharacter) return;
+	PlayerPaperCharacter->Attack();
+}
+
+void AMainPlayerController::StopAttack(const FInputActionValue& Value)
+{
+	if(!PlayerPaperCharacter) return;
+	PlayerPaperCharacter->StopAttack();
 }

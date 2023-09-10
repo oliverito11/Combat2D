@@ -14,7 +14,7 @@ class COMBAT2DGAME_API AMainPlayerController : public APlayerController
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
 	AMainPaperZDCharacter *PlayerPaperCharacter;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -30,24 +30,26 @@ private:
 	UInputAction* MoveAction;
 	
 	/** Move Input Action */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-    UInputAction* AttackAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* AttackAction;
 
-protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShowMenuAction;
+public:
 	AMainPlayerController();
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-	virtual void Tick(float DeltaSeconds) override;
 	
 private:
 	void Move(const FInputActionValue& Value);
 	void Jump(const FInputActionValue& Value);
 	void StopJumping(const FInputActionValue& Value);
-
+	void Attack(const FInputActionValue& Value);
+	void StopAttack(const FInputActionValue& Value);
+	
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void Attack(const FInputActionValue& Value);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void ChangeSpriteDirection(bool bIsLeft);
+	void ShowMenu();
 };
