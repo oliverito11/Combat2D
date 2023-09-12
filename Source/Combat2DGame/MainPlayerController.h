@@ -35,6 +35,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShowMenuAction;
+
+	/** Bow attack Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* BowAction;
 public:
 	AMainPlayerController();
 protected:
@@ -48,6 +52,8 @@ private:
 	void StopJumping(const FInputActionValue& Value);
 	void Attack(const FInputActionValue& Value);
 	void StopAttack(const FInputActionValue& Value);
+	void ChargeBow(const FInputActionValue& Value);
+	void ShootBow(const FInputActionValue& Value);
 	
 public:
 	UFUNCTION(BlueprintImplementableEvent)

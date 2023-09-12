@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "MainPaperZDCharacter.generated.h"
 
+class AProjectileActor;
 class UUsernameUserWidget;
 class UWidgetComponent;
 class USpringArmComponent;
@@ -39,6 +40,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	UUsernameUserWidget *UsernameUserWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, meta=(MakeEditWidget))
+	FVector ProjectileLocation;
 	
 public:
 	AMainPaperZDCharacter();
@@ -60,6 +67,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
     void StopAttack();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChargeBow();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShootBow();
+	
 	UFUNCTION(Server, Reliable)
 	void RotateCharacter(bool bIsLeft);
 	
@@ -67,4 +80,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ResetKnockBack();
+	
+	UFUNCTION(BlueprintCallable)
+	void ShootProjectile();
 };

@@ -4,9 +4,11 @@
 #include "MainPaperZDCharacter.h"
 
 #include "PaperFlipbookComponent.h"
+#include "ProjectileActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -61,4 +63,16 @@ void AMainPaperZDCharacter::RotateCharacter_Implementation(bool bIsLeft)
 void AMainPaperZDCharacter::ResetKnockBack()
 {
 	KnockBack = 0;
+}
+
+void AMainPaperZDCharacter::ShootProjectile()
+{
+	UE_LOG(LogTemp, Warning, TEXT("SHOOT"))
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = this;
+	SpawnParameters.Instigator = this;
+	AProjectileActor *ProjectileActor = GetWorld()->SpawnActor<AProjectileActor>(ProjectileClass, GetActorLocation() + (GetSprite()->GetComponentScale().X < 0 ? -ProjectileLocation : ProjectileLocation), FRotator::ZeroRotator, SpawnParameters);
+	if(!ProjectileActor) return;
+	ProjectileActor->SetShootDirection(GetSprite()->GetComponentScale().X < 0 ? -1 : 1);
 }

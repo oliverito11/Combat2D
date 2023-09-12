@@ -41,11 +41,17 @@ void AMainPlayerController::SetupInputComponent()
 	if(UEnhancedInputComponent *EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered,this, &AMainPlayerController::Move);
+
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started,this, &AMainPlayerController::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopJumping);
+
+		EnhancedInputComponent->BindAction(ShowMenuAction, ETriggerEvent::Started, this, &AMainPlayerController::ShowMenu);
+		
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AMainPlayerController::Attack);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &AMainPlayerController::StopAttack);
-		EnhancedInputComponent->BindAction(ShowMenuAction, ETriggerEvent::Started, this, &AMainPlayerController::ShowMenu);
+
+		EnhancedInputComponent->BindAction(BowAction, ETriggerEvent::Started, this, &AMainPlayerController::ChargeBow);
+		EnhancedInputComponent->BindAction(BowAction, ETriggerEvent::Completed, this, &AMainPlayerController::ShootBow);
 	}
 }
 
@@ -78,4 +84,16 @@ void AMainPlayerController::StopAttack(const FInputActionValue& Value)
 {
 	if(!PlayerPaperCharacter) return;
 	PlayerPaperCharacter->StopAttack();
+}
+
+void AMainPlayerController::ChargeBow(const FInputActionValue& Value)
+{
+	if(!PlayerPaperCharacter) return;
+	PlayerPaperCharacter->ChargeBow();
+}
+
+void AMainPlayerController::ShootBow(const FInputActionValue& Value)
+{
+	if(!PlayerPaperCharacter) return;
+	PlayerPaperCharacter->ShootBow();
 }
