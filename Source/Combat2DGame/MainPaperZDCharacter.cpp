@@ -6,9 +6,8 @@
 #include "PaperFlipbookComponent.h"
 #include "ProjectileActor.h"
 #include "Camera/CameraComponent.h"
-#include "Components/WidgetComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -20,8 +19,12 @@ AMainPaperZDCharacter::AMainPaperZDCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Player camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	UsernameWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Username Widget"));
-	UsernameWidget->SetupAttachment(RootComponent);
+	NameComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Username"));
+	NameComponent->SetRelativeRotation(FRotator{0, -90, 0});
+	NameComponent->SetHorizontalAlignment(EHTA_Center);
+	NameComponent->SetVerticalAlignment(EVRTA_TextCenter);
+	NameComponent->SetWorldSize(15);
+	NameComponent->SetupAttachment(RootComponent);
 }
 
 void AMainPaperZDCharacter::BeginPlay()

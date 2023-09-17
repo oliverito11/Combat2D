@@ -6,19 +6,14 @@
 #include "Engine/GameInstance.h"
 #include "MainGameInstance.generated.h"
 
-class AMainPlayerPlayerState;
 UCLASS()
 class COMBAT2DGAME_API UMainGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 private:
-	UPROPERTY(VisibleAnywhere)
-	TMap<bool, FText> Players;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
+	FText PlayerName;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void AddPlayer(FText Player);
-
-	UFUNCTION(BlueprintCallable)
-	FText GetPlayerName() const;
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 };

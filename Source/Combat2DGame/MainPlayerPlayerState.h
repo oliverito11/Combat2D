@@ -10,8 +10,9 @@ UCLASS()
 class COMBAT2DGAME_API AMainPlayerPlayerState : public APlayerState
 {
 	GENERATED_BODY()
-
+private:
+	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
+	FText PlayerName;
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetNewPlayerName(FString NewName);
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 };

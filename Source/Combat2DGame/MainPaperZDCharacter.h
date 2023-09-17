@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "MainPaperZDCharacter.generated.h"
 
+class UTextRenderComponent;
 class AProjectileActor;
 class UUsernameUserWidget;
 class UWidgetComponent;
@@ -36,11 +37,8 @@ private:
 	float KnockBack {0};
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
-	UWidgetComponent *UsernameWidget;
-
-	UPROPERTY(EditDefaultsOnly)
-	UUsernameUserWidget *UsernameUserWidget;
-
+	UTextRenderComponent *NameComponent;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> ProjectileClass;
 

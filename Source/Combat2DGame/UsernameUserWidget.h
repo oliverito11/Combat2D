@@ -13,7 +13,7 @@ class COMBAT2DGAME_API UUsernameUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 private:
-	UPROPERTY(meta=(BindWidget))
+	UPROPERTY(meta=(BindWidget, AllowPrivateAccess), BlueprintReadWrite)
 	UTextBlock *TxtUsername;
 
 public:

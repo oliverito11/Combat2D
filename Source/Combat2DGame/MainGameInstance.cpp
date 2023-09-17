@@ -3,19 +3,11 @@
 
 #include "MainGameInstance.h"
 
-void UMainGameInstance::AddPlayer(FText Player)
-{
-	Players.Add(false, Player);
-}
+#include "Net/UnrealNetwork.h"
 
-FText UMainGameInstance::GetPlayerName() const
+void UMainGameInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	for (auto Player : Players)
-	{
-		if (Player.Key) continue;
-		Player.Key = true;
-		return Player.Value;
-	}
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	return FText::FromString("NotFound");
+	DOREPLIFETIME(UMainGameInstance, PlayerName);
 }

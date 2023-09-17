@@ -48,6 +48,6 @@ void AProjectileActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector NewLocation = GetActorForwardVector() * ShootDirection;
-	SetActorLocation(GetActorLocation() + NewLocation * ProjectileSpeed);
+	SetActorLocation(GetActorLocation() + NewLocation * ProjectileSpeed * DeltaTime);
 }
 

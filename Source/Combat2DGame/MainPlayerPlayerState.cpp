@@ -3,7 +3,11 @@
 
 #include "MainPlayerPlayerState.h"
 
-void AMainPlayerPlayerState::SetNewPlayerName(FString NewName)
+#include "Net/UnrealNetwork.h"
+
+void AMainPlayerPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::SetPlayerName(NewName);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMainPlayerPlayerState, PlayerName);
 }
