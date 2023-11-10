@@ -6,7 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "MainPaperZDCharacter.h"
+#include "PaperFlipbookComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -31,7 +33,12 @@ void AMainPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 
-	PlayerPaperCharacter = Cast<AMainPaperZDCharacter>(GetCharacter());
+	PlayerPaperCharacter = Cast<AMainPaperZDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	
+	TimerDelegate.BindLambda([this]()
+	{
+		SetCanDash(true);
+	});
 }
 
 void AMainPlayerController::SetupInputComponent()
@@ -52,6 +59,8 @@ void AMainPlayerController::SetupInputComponent()
 
 		EnhancedInputComponent->BindAction(BowAction, ETriggerEvent::Started, this, &AMainPlayerController::ChargeBow);
 		EnhancedInputComponent->BindAction(BowAction, ETriggerEvent::Completed, this, &AMainPlayerController::ShootBow);
+
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AMainPlayerController::Dash);
 	}
 }
 
@@ -96,4 +105,20 @@ void AMainPlayerController::ShootBow(const FInputActionValue& Value)
 {
 	if(!PlayerPaperCharacter) return;
 	PlayerPaperCharacter->ShootBow();
+}
+
+void AMainPlayerController::Dash(const FInputActionValue& Value)
+{
+	if(!PlayerPaperCharacter) return;
+	LaunchPlayer(PlayerPaperCharacter);
+}
+
+void AMainPlayerController::LaunchPlayer_Implementation(AMainPaperZDCharacter* PlayerToLaunch)
+{
+	if(!bCanDash) return;
+	FVector LaunchDir = PlayerToLaunch->GetActorForwardVector() * PlayerToLaunch->GetSprite()->GetComponentScale().X;
+	bCanDash = false;
+	PlayerToLaunch->LaunchCharacter(LaunchDir * DashSpeed, false, false);
+	UE_LOG(LogTemp, Warning, TEXT("DASH"))
+	GetWorldTimerManager().SetTimer(DashTimer, TimerDelegate, 0.5f, false);
 }

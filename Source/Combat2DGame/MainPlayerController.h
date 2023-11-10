@@ -8,17 +8,20 @@ class AMainPaperZDCharacter;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
+
+DECLARE_DELEGATE(FTimerDelegate)
+
 UCLASS()
 class COMBAT2DGAME_API AMainPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
 	AMainPaperZDCharacter *PlayerPaperCharacter;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	/** MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
 	/** Jump Input Action */
@@ -39,6 +42,21 @@ private:
 	/** Bow attack Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* BowAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DashAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess))
+	float DashSpeed {400};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess), Replicated)
+	bool bCanDash {false};
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess))
+	FTimerHandle DashTimer;
+
+	FTimerDelegate TimerDelegate;
+
 public:
 	AMainPlayerController();
 protected:
@@ -54,8 +72,13 @@ private:
 	void StopAttack(const FInputActionValue& Value);
 	void ChargeBow(const FInputActionValue& Value);
 	void ShootBow(const FInputActionValue& Value);
-	
+	void Dash(const FInputActionValue& Value);
+
+	UFUNCTION(Server, Reliable)
+	void LaunchPlayer(AMainPaperZDCharacter *PlayerToLaunch);
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowMenu();
+
+	void SetCanDash(bool bDash) { bCanDash = bDash; }
 };

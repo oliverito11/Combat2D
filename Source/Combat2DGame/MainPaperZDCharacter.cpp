@@ -75,7 +75,12 @@ void AMainPaperZDCharacter::ShootProjectile()
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Owner = this;
 	SpawnParameters.Instigator = this;
-	AProjectileActor *ProjectileActor = GetWorld()->SpawnActor<AProjectileActor>(ProjectileClass, GetActorLocation() + (GetSprite()->GetComponentScale().X < 0 ? -ProjectileLocation : ProjectileLocation), FRotator::ZeroRotator, SpawnParameters);
+	
+	const FVector ProjectileSpawnLocation{-ProjectileLocation.X, ProjectileLocation.Y, ProjectileLocation.Z};
+	AProjectileActor *ProjectileActor = GetWorld()->SpawnActor<AProjectileActor>(ProjectileClass, GetActorLocation() + (GetSprite()->GetComponentScale().X < 0 ? ProjectileSpawnLocation : ProjectileLocation), FRotator::ZeroRotator, SpawnParameters);
 	if(!ProjectileActor) return;
+	
+	const FVector ProjectileSpawnScale{-ProjectileActor->GetActorScale().X, ProjectileActor->GetActorScale().Y, ProjectileActor->GetActorScale().Z};
+	ProjectileActor->SetActorScale3D(GetSprite()->GetComponentScale().X < 0 ? ProjectileSpawnScale : ProjectileActor->GetActorScale());
 	ProjectileActor->SetShootDirection(GetSprite()->GetComponentScale().X < 0 ? -1 : 1);
 }

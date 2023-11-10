@@ -4,8 +4,8 @@
 #include "ProjectileActor.h"
 
 #include "MainPaperZDCharacter.h"
+#include "PaperFlipbookComponent.h"
 #include "Components/BoxComponent.h"
-#include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -15,7 +15,7 @@ AProjectileActor::AProjectileActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	
-	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile mesh"));
+	ProjectileMesh = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Projectile mesh"));
 	ProjectileMesh->SetupAttachment(RootComponent);
 
 	BoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));

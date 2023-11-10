@@ -7,6 +7,7 @@
 #include "ProjectileActor.generated.h"
 
 class UBoxComponent;
+class UPaperFlipbookComponent;
 
 UCLASS()
 class COMBAT2DGAME_API AProjectileActor : public AActor
@@ -17,7 +18,7 @@ private:
 	UBoxComponent *BoxTrigger;
 
 	UPROPERTY(EditDefaultsOnly)
-	UStaticMeshComponent *ProjectileMesh;
+	UPaperFlipbookComponent *ProjectileMesh;
 
 	UPROPERTY(EditAnywhere)
 	float ProjectileDamage {20};
