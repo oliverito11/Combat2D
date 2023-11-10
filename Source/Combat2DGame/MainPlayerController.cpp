@@ -32,13 +32,13 @@ void AMainPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
-
-	PlayerPaperCharacter = Cast<AMainPaperZDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	
 	TimerDelegate.BindLambda([this]()
 	{
 		SetCanDash(true);
 	});
+	
+	PlayerPaperCharacter = Cast<AMainPaperZDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 
 void AMainPlayerController::SetupInputComponent()
