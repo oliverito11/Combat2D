@@ -57,6 +57,9 @@ private:
 
 	FTimerDelegate TimerDelegate;
 
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess))
+	USoundBase* DashSound;
+
 public:
 	AMainPlayerController();
 protected:

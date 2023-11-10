@@ -116,6 +116,7 @@ void AMainPlayerController::Dash(const FInputActionValue& Value)
 void AMainPlayerController::LaunchPlayer_Implementation(AMainPaperZDCharacter* PlayerToLaunch)
 {
 	if(!bCanDash) return;
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DashSound, PlayerPaperCharacter->GetActorLocation());
 	FVector LaunchDir = PlayerToLaunch->GetActorForwardVector() * PlayerToLaunch->GetSprite()->GetComponentScale().X;
 	bCanDash = false;
 	PlayerToLaunch->LaunchCharacter(LaunchDir * DashSpeed, false, false);

@@ -30,6 +30,11 @@ AMainPaperZDCharacter::AMainPaperZDCharacter()
 void AMainPaperZDCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OnDamageFinishDelegate.BindLambda([this]
+	{
+		GetSprite()->SetSpriteColor(FLinearColor::White);
+	});
 }
 
 void AMainPaperZDCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -48,10 +53,23 @@ float AMainPaperZDCharacter::TakeDamage(float DamageAmount, FDamageEvent const& 
 	{
 		KnockBack += Damage;
 		float CharDir = GetActorLocation().Length() > OtherChar->GetActorLocation().Length() ? 1 : -1;
-		LaunchCharacter(FVector{CharDir,0,1} * KnockBack, true, true);
+		LaunchCharacter(FVector{CharDir,0,1} * KnockBack, false, false);
+		DamagePlayer();
 	}
 	
 	return Damage;
+}
+
+void AMainPaperZDCharacter::DamagePlayer_Implementation()
+{
+	GetSprite()->SetSpriteColor(DamageColor);
+
+	//Now RGB variables are storing the HSV values
+	FLinearColor HSVDamage = DamageColor.LinearRGBToHSV();
+	HSVDamage.G = HSVDamage.G < 0.99 ? HSVDamage.G + DamageIncreaseColor : HSVDamage.G;
+	HSVDamage.B = HSVDamage.B > 0.01 ? HSVDamage.B - DamageIncreaseColor : HSVDamage.B;
+	DamageColor = HSVDamage.HSVToLinearRGB();
+	GetWorldTimerManager().SetTimer(DamageTimer, OnDamageFinishDelegate, 0.2f, false);
 }
 
 void AMainPaperZDCharacter::RotateCharacter_Implementation(bool bIsLeft)
@@ -66,6 +84,7 @@ void AMainPaperZDCharacter::RotateCharacter_Implementation(bool bIsLeft)
 void AMainPaperZDCharacter::ResetKnockBack()
 {
 	KnockBack = 0;
+	DamageColor = FLinearColor::White;
 }
 
 void AMainPaperZDCharacter::ShootProjectile()

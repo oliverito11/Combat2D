@@ -13,9 +13,9 @@ class AProjectileActor;
 class UUsernameUserWidget;
 class UWidgetComponent;
 class USpringArmComponent;
-/**
- * 
- */
+
+DECLARE_DELEGATE(FOnDamageFinish)
+
 UCLASS()
 class COMBAT2DGAME_API AMainPaperZDCharacter : public APaperZDCharacter
 {
@@ -44,7 +44,18 @@ private:
 
 	UPROPERTY(EditAnywhere, meta=(MakeEditWidget))
 	FVector ProjectileLocation;
-	
+
+	UPROPERTY()
+	FTimerHandle DamageTimer;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess))
+	FLinearColor DamageColor;
+
+	FOnDamageFinish OnDamageFinishDelegate;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess))
+	float DamageIncreaseColor {0.05f};
+
 public:
 	AMainPaperZDCharacter();
 
@@ -52,6 +63,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, AActor *DamageCauser) override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void DamagePlayer();
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void JumpPlayer();
@@ -81,4 +95,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void ShootProjectile();
+
+	UFUNCTION(BlueprintCallable)
+	float GetKnockBack() const { return KnockBack; }
 };
